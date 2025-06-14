@@ -1,0 +1,29 @@
+using System;
+using System.Text.Json;
+using System.Text;
+
+public class Product
+{
+    public string Name { get; set; }
+    public decimal Price { get; set; }
+    public string Category { get; set; }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Console.OutputEncoding = Encoding.UTF8;
+
+        Product product = new Product
+        {
+            Name = "Bread",
+            Price = 29.50m,
+            Category = "Food"
+        };
+
+        string json = JsonSerializer.Serialize(product);
+        Console.WriteLine("JSON serialization of Product object:");
+        Console.WriteLine(json);
+    }
+}
