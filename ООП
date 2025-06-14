@@ -1,0 +1,70 @@
+using System;
+using System.Collections.Generic;
+
+// Інтерфейс спостерігача
+public interface IUser
+{
+    void ReceiveMessage(string message);
+}
+
+// Клас користувача
+public class User : IUser
+{
+    public string Name { get; }
+
+    public User(string name)
+    {
+        Name = name;
+    }
+
+    public void ReceiveMessage(string message)
+    {
+        Console.WriteLine($"[{Name}] Отримано повідомлення: {message}");
+    }
+}
+
+// Клас сервера (спостережуваний об'єкт)
+public class Server
+{
+    private List<IUser> _users = new List<IUser>();
+
+    public void Subscribe(IUser user)
+    {
+        _users.Add(user);
+    }
+
+    public void Unsubscribe(IUser user)
+    {
+        _users.Remove(user);
+    }
+
+    public void SendMessage(string message)
+    {
+        Console.WriteLine($"[Сервер] Надсилає повідомлення: {message}");
+        foreach (var user in _users)
+        {
+            user.ReceiveMessage(message);
+        }
+    }
+}
+
+// Точка входу
+class Program
+{
+    static void Main()
+    {
+        var server = new Server();
+
+        var user1 = new User("Олег");
+        var user2 = new User("Ірина");
+
+        server.Subscribe(user1);
+        server.Subscribe(user2);
+
+        server.SendMessage("Сервер оновлено.");
+
+        server.Unsubscribe(user1);
+
+        server.SendMessage("Нова функція доступна.");
+    }
+}
