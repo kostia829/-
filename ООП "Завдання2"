@@ -1,0 +1,42 @@
+using System;
+
+public class Dispatcher
+{
+    private static Dispatcher _instance;
+    private static readonly object _lock = new object();
+
+    private Dispatcher() { }
+
+    public static Dispatcher Instance
+    {
+        get
+        {
+            lock (_lock)
+            {
+                if (_instance == null)
+                    _instance = new Dispatcher();
+
+                return _instance;
+            }
+        }
+    }
+
+    public void HandleEvent(string eventName)
+    {
+        Console.WriteLine($"[Dispatcher] Обробка події: {eventName}");
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        var dispatcher = Dispatcher.Instance;
+        dispatcher.HandleEvent("Click");
+
+        var secondDispatcher = Dispatcher.Instance;
+        secondDispatcher.HandleEvent("Resize");
+
+        Console.WriteLine($"Dispatcher об’єкти однакові: {dispatcher == secondDispatcher}");
+    }
+}
