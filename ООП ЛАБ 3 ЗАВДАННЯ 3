@@ -1,0 +1,46 @@
+using System;
+using System.Collections.Generic;
+
+// Клас Person
+class Person : IComparable<Person>
+{
+    public string Name { get; set; }
+    public int Age { get; set; }
+
+    public Person(string name, int age)
+    {
+        Name = name;
+        Age = age;
+    }
+
+    public int CompareTo(Person other)
+    {
+        return this.Age.CompareTo(other.Age);
+    }
+
+    public override string ToString()
+    {
+        return $"Name: {Name}, Age: {Age}.";
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        List<Person> people = new List<Person>
+        {
+            new Person("Анна", 20),
+            new Person("Богдан", 18),
+            new Person("Галина", 30)
+        };
+
+        people.Sort();
+
+        Console.WriteLine("Список після сортування за віком:");
+        foreach (Person person in people)
+        {
+            Console.WriteLine(person);
+        }
+    }
+}
