@@ -1,0 +1,42 @@
+using System;
+
+// Делегат, який представляє функцію f(x)
+public delegate double Function(double x);
+
+public class TrapezoidIntegrator
+{
+    public static double Calculate(Function f, double a, double b, int n)
+    {
+        double h = (b - a) / n;
+        double sum = f(a) + f(b);
+
+        for (int i = 1; i < n; i++)
+        {
+            double x = a + i * h;
+            sum += 2 * f(x);
+        }
+
+        return (h / 2) * sum;
+    }
+}
+
+class Program
+{
+    // Функція для прикладу: f(x) = x^2
+    public static double MyFunction(double x)
+    {
+        return x * x;
+    }
+
+    static void Main()
+    {
+        Console.OutputEncoding = System.Text.Encoding.UTF8;
+
+        double a = 0;
+        double b = 2;
+        int n = 100;
+
+        double result = TrapezoidIntegrator.Calculate(MyFunction, a, b, n);
+        Console.WriteLine($"Integral of f(x)=x^2 on interval [{a}; {b}] ≈ {result}");
+    }
+}
