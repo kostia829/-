@@ -1,0 +1,84 @@
+using System;
+using System.IO;
+
+class Task1_FileSystem
+{
+    static void Main()
+    {
+        // Базові дані
+        string baseDir = @"C:\OOP_lab08";
+        string group = "KN1-B23";
+        string lastName = "Morgush";
+
+        // Шляхи до папок
+        string groupDir = Path.Combine(baseDir, group);
+        string lastNameDir = Path.Combine(baseDir, lastName);
+        string sourcesDir = Path.Combine(baseDir, "Sources");
+        string reportsDir = Path.Combine(baseDir, "Reports");
+        string textsDir = Path.Combine(baseDir, "Texts");
+
+        // Створення базових папок
+        Directory.CreateDirectory(baseDir);
+        Directory.CreateDirectory(groupDir);
+        Directory.CreateDirectory(lastNameDir);
+        Directory.CreateDirectory(sourcesDir);
+        Directory.CreateDirectory(reportsDir);
+        Directory.CreateDirectory(textsDir);
+
+        Console.WriteLine("Створено каталоги:");
+
+        // Копіювання Sources, Reports, Texts до Morgush
+        foreach (string folder in new[] { sourcesDir, reportsDir, textsDir })
+        {
+            string dest = Path.Combine(lastNameDir, Path.GetFileName(folder));
+            if (!Directory.Exists(dest))
+            {
+                CopyDirectory(folder, dest);
+                Console.WriteLine($"Скопійовано {folder} → {dest}");
+            }
+        }
+
+        // Переміщення Morgush → KN1-B23
+        string finalPath = Path.Combine(groupDir, lastName);
+        if (!Directory.Exists(finalPath))
+        {
+            Directory.Move(lastNameDir, finalPath);
+            Console.WriteLine($"Переміщено {lastName} → {groupDir}");
+        }
+
+        // Створення файлу dirinfo.txt у C:\OOP_lab08\Texts
+        string dirInfoFile = Path.Combine(textsDir, "dirinfo.txt");
+        DirectoryInfo di = new DirectoryInfo(textsDir);
+        using (StreamWriter sw = new StreamWriter(dirInfoFile))
+        {
+            sw.WriteLine($"Directory Name: {di.Name}");
+            sw.WriteLine($"Full Path: {di.FullName}");
+            sw.WriteLine($"Created: {di.CreationTime}");
+            sw.WriteLine("Files:");
+            foreach (var file in di.GetFiles())
+            {
+                sw.WriteLine($"- {file.Name}");
+            }
+        }
+
+        Console.WriteLine("Створено файл dirinfo.txt у каталозі Texts.");
+        Console.WriteLine("Завдання 1 виконано успішно.");
+    }
+
+    // Метод для копіювання каталогів з вмістом
+    static void CopyDirectory(string source, string destination)
+    {
+        Directory.CreateDirectory(destination);
+        foreach (var file in Directory.GetFiles(source))
+        {
+            string destFile = Path.Combine(destination, Path.GetFileName(file));
+            File.Copy(file, destFile, true);
+        }
+
+        foreach (var dir in Directory.GetDirectories(source))
+        {
+            string destSubDir = Path.Combine(destination, Path.GetFileName(dir));
+            CopyDirectory(dir, destSubDir);
+        }
+    }
+}
