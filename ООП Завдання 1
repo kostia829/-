@@ -1,0 +1,76 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+public class CharSet
+{
+    private HashSet<char> elements = new HashSet<char>();
+
+    public CharSet() { }
+
+    public CharSet(IEnumerable<char> chars)
+    {
+        foreach (var c in chars)
+            elements.Add(c);
+    }
+
+    public static CharSet operator +(CharSet set1, CharSet set2)
+    {
+        return new CharSet(set1.elements.Union(set2.elements));
+    }
+
+    public static CharSet operator +(char c, CharSet set)
+    {
+        var result = new CharSet(set.elements);
+        result.elements.Add(c);
+        return result;
+    }
+
+    public static bool operator ==(CharSet a, CharSet b)
+    {
+        return a.elements.SetEquals(b.elements);
+    }
+
+    public static bool operator !=(CharSet a, CharSet b)
+    {
+        return !(a == b);
+    }
+
+    public override string ToString()
+    {
+        return $"{{{string.Join(", ", elements)}}}";
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (obj is CharSet set)
+            return this == set;
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+        return elements.GetHashCode();
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        CharSet A = new CharSet("abc");
+        CharSet B = new CharSet("bcd");
+
+        Console.WriteLine("A: " + A);
+        Console.WriteLine("B: " + B);
+
+        CharSet C = A + B;
+        Console.WriteLine("A + B: " + C);
+
+        CharSet D = 'z' + A;
+        Console.WriteLine("'z' + A: " + D);
+
+        Console.WriteLine("A == B: " + (A == B));
+        Console.WriteLine("A == A: " + (A == A));
+    }
+}
