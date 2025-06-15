@@ -1,0 +1,22 @@
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        Console.Write("Enter target date (yyyy-MM-dd): ");
+        DateTime targetDate = DateTime.Parse(Console.ReadLine() ?? "");
+
+        DateTime today = DateTime.Today;
+
+        if (targetDate < today)
+        {
+            Console.WriteLine("The date has already passed.");
+        }
+        else
+        {
+            TimeSpan difference = targetDate - today;
+            Console.WriteLine($"Days remaining: {difference.Days}");
+        }
+    }
+}
