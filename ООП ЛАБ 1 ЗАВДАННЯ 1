@@ -1,0 +1,17 @@
+using System;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Console.Write("Введіть перше число: ");
+        int number1 = int.Parse(Console.ReadLine());
+
+        Console.Write("Введіть друге число: ");
+        int number2 = int.Parse(Console.ReadLine());
+
+        int sum = number1 + number2;
+
+        Console.WriteLine($"Сума = {sum}");
+    }
+}
