@@ -1,0 +1,151 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+// Клас Word
+public class Word
+{
+    public string Text { get; set; }
+
+    public Word(string text)
+    {
+        Text = text;
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (obj == null) return false;
+
+        Word other = obj as Word;
+        if (other == null) return false;
+
+        return Text == other.Text;
+    }
+
+    public override int GetHashCode()
+    {
+        return Text.GetHashCode();
+    }
+
+    public override string ToString()
+    {
+        return Text;
+    }
+}
+
+// Клас Sentence
+public class Sentence : Word
+{
+    private List<Word> Words;
+
+    public Sentence(string sentence) : base(sentence)
+    {
+        Words = sentence.Split(' ').Select(s => new Word(s)).ToList();
+    }
+
+    public void AddWord(string word)
+    {
+        Words.Add(new Word(word));
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (obj == null) return false;
+
+        Sentence other = obj as Sentence;
+        if (other == null) return false;
+
+        if (Words.Count != other.Words.Count) return false;
+
+        for (int i = 0; i < Words.Count; i++)
+        {
+            if (!Words[i].Equals(other.Words[i])) return false;
+        }
+        return true;
+    }
+
+    public override int GetHashCode()
+    {
+        int hash = 17;
+
+        foreach (Word word in Words)
+        {
+            hash = hash * 31 + word.GetHashCode();
+        }
+
+        return hash;
+    }
+
+    public override string ToString()
+    {
+        return string.Join(" ", Words);
+    }
+}
+
+// Клас Text
+public class Text : Sentence
+{
+    public string Title { get; set; }
+    private List<Sentence> Sentences;
+
+    public Text(string title) : base("")
+    {
+        Title = title;
+        Sentences = new List<Sentence>();
+
+    }
+
+    public void AddSentence(Sentence sentence)
+    {
+        Sentences.Add(sentence);
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (obj == null) return false;
+
+        Text other = obj as Text;
+        if (other == null) return false;
+
+        if (Title != other.Title) return false;
+
+        if (Sentences.Count != other.Sentences.Count) return false;
+
+        for (int i = 0; i < Sentences.Count; i++)
+        {
+            if (!Sentences[i].Equals(other.Sentences[i])) return false;
+        }
+        return true;
+    }
+
+    public override int GetHashCode()
+    {
+        int hash = Title.GetHashCode();
+
+        foreach (Sentence sentence in Sentences)
+        {
+            hash = hash * 31 + sentence.GetHashCode();
+        }
+
+        return hash;
+    }
+
+    public override string ToString()
+    {
+        return $"Текст: {Title}\n{string.Join("\n", Sentences)}";
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Text text = new Text("Мій текст");
+
+        text.AddSentence(new Sentence("Це перше речення."));
+        text.AddSentence(new Sentence("Це друге речення."));
+        text.AddSentence(new Sentence("Це третє речення."));
+
+        Console.WriteLine(text.ToString());
+    }
+}
