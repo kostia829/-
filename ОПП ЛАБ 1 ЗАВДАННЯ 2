@@ -1,0 +1,14 @@
+using System;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Console.Write("Введіть число: ");
+        int number = int.Parse(Console.ReadLine());
+
+        int cube = number * number * number;
+
+        Console.WriteLine($"Куб числа = {cube}");
+    }
+}
