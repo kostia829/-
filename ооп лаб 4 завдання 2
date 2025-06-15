@@ -1,0 +1,116 @@
+using System;
+
+// Абстрактний клас TPrism
+public abstract class TPrism
+{
+    protected double side;
+    protected double height;
+
+    protected TPrism(double side, double height)
+    {
+        this.side = side;
+        this.height = height;
+    }
+
+    // Віртуальні/абстрактні методи
+    public abstract double SurfaceArea();
+    public abstract double Volume();
+
+    public override string ToString()
+    {
+        return $"Призма зі стороною {side} та висотою {height}. " +
+               $"Об'єм = {Volume()} ; Площа поверхні = {SurfaceArea()}.";
+    }
+}
+
+public class TPrism3 : TPrism // Трикутна правильна призма
+{
+    public TPrism3(double side, double height) : base(side, height) { }
+
+    public override double SurfaceArea()
+    {
+        double baseArea = (Math.Sqrt(3) / 4) * side * side;
+        double basePerimeter = 3 * side;
+
+        return 2 * baseArea + basePerimeter * height;
+    }
+
+    public override double Volume()
+    {
+        return (Math.Sqrt(3) / 4) * side * side * height;
+    }
+}
+
+public class TPrism4 : TPrism // Чотирикутна правильна призма
+{
+    public TPrism4(double side, double height) : base(side, height) { }
+
+    public override double SurfaceArea()
+    {
+        double baseArea = side * side;
+        double basePerimeter = 4 * side;
+
+        return 2 * baseArea + basePerimeter * height;
+    }
+
+    public override double Volume()
+    {
+        return side * side * height;
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Console.Write("Введіть кількість призм: ");
+        int m = int.Parse(Console.ReadLine());
+
+        TPrism[] prisms = new TPrism[m];
+        double side = 0;
+        double height = 0;
+
+        for (int i = 0; i < m; i++)
+        {
+            if (i == 0)
+            {
+                Console.Write("Введіть сторону призми: ");
+                side = double.Parse(Console.ReadLine());
+
+                Console.Write("Введіть висоту призми: ");
+                height = double.Parse(Console.ReadLine());
+            }
+            else
+            {
+                side += 5;
+                height += 5;
+            }
+
+            if (i % 2 == 0)
+            {
+                prisms[i] = new TPrism3(side, height);
+            }
+            else
+            {
+                prisms[i] = new TPrism4(side, height);
+            }
+
+            Console.WriteLine(prisms[i].ToString());
+        }
+
+        double sumVolume = 0;
+        double sumSurface = 0;
+
+        foreach (TPrism prism in prisms)
+        {
+            if (prism is TPrism3)
+                sumVolume += prism.Volume();
+
+            if (prism is TPrism4)
+                sumSurface += prism.SurfaceArea();
+        }
+
+        Console.WriteLine($"Сумарний об'єм трикутних призм: {sumVolume:F2}.");
+        Console.WriteLine($"Сума площ поверхні чотирикутних призм: {sumSurface:F2}.");
+    }
+}
