@@ -1,0 +1,24 @@
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        Console.WriteLine("Enter a binary string (e.g., 101010):");
+        string input = Console.ReadLine() ?? "";
+
+        Console.Write("Enter starting position (0-based index): ");
+        int start = int.Parse(Console.ReadLine() ?? "0");
+
+        char[] chars = input.ToCharArray();
+
+        for (int i = start; i < chars.Length; i++)
+        {
+            if (chars[i] == '1') chars[i] = '0';
+            else if (chars[i] == '0') chars[i] = '1';
+        }
+
+        string result = new string(chars);
+        Console.WriteLine("Result: " + result);
+    }
+}
