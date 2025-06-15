@@ -1,0 +1,152 @@
+using System;
+
+// Власний клас винятку для кількості місяців
+public class KilkistException : Exception
+{
+    public KilkistException(string message) : base(message) { }
+}
+
+// Власний клас винятку для суми вкладу
+public class VkladException : Exception
+{
+    public VkladException(string message) : base(message) { }
+}
+
+// Базовий клас "Вклад"
+public class Vklad
+{
+    public string PIB { get; set; }
+    public double SumaVkladu { get; set; }
+
+    public Vklad(string pib, double suma)
+    {
+        try
+        {
+            if (suma < 0)
+                throw new VkladException($"Неможливо створити внесок – вказана негативна сума вкладу: {suma}");
+
+            PIB = pib;
+            SumaVkladu = suma;
+        }
+        catch (VkladException ex)
+        {
+            Console.WriteLine(ex.Message);
+            throw; // повторно кидаємо виняток, як вимагає завдання
+        }
+    }
+
+    // Віртуальний метод для розрахунку суми вкладу
+    public virtual double RozrahSuma(int kilkistMis)
+    {
+        return SumaVkladu;
+    }
+}
+
+// Довгостроковий вклад (наприклад, для викладачів)
+public class DovgostrokoviyVklad : Vklad
+{
+    public DovgostrokoviyVklad(string pib, double suma) : base(pib, suma) { }
+
+    public override double RozrahSuma(int kilkistMis)
+    {
+        try
+        {
+            if (kilkistMis < 0)
+                throw new KilkistException("Кількість місяців не може бути від'ємною!");
+
+            return SumaVkladu * Math.Pow(1.02, kilkistMis); // 2% щомісячно
+        }
+        catch (KilkistException ex)
+        {
+            Console.WriteLine($"Помилка в Довгостроковий вклад: {ex.Message}");
+            return 0;
+        }
+    }
+}
+
+// Вклад на вимогу (наприклад, для студентів)
+public class VkladNaVymogu : Vklad
+{
+    public VkladNaVymogu(string pib, double suma) : base(pib, suma) { }
+
+    public override double RozrahSuma(int kilkistMis)
+    {
+        try
+        {
+            if (kilkistMis < 0)
+                throw new KilkistException("Кількість місяців не може бути від'ємною!");
+
+            return SumaVkladu * Math.Pow(1.01, kilkistMis); // 1% щомісячно
+        }
+        catch (KilkistException ex)
+        {
+            Console.WriteLine($"Помилка у Вклад на вимогу: {ex.Message}");
+            return 0;
+        }
+    }
+}
+
+// Клас "Філія банку"
+public class Filiya
+{
+    public string Nazva { get; set; }
+    public double ZagSumaVkladiv { get; set; }
+
+    public Filiya(string nazva, double suma)
+    {
+        Nazva = nazva;
+        ZagSumaVkladiv = suma;
+    }
+}
+
+// Клас "Банк"
+public class Bank
+{
+    public string Nazva { get; set; }
+
+    public Bank(string nazva)
+    {
+        Nazva = nazva;
+    }
+}
+
+// Основна програма
+class Program
+{
+    static void Main(string[] args)
+    {
+        Console.WriteLine("=== Банк Національного університету імені Івана Огієнка ===");
+
+        try
+        {
+            // Спроба створити вклад з некоректною сумою (-5000)
+            Vklad v1 = new Vklad("Студент Петров", -5000); // Викине виключення
+        }
+        catch (VkladException)
+        {
+            Console.WriteLine("Створення вкладу завершилось помилкою.");
+        }
+
+        try
+        {
+            // Створення коректних вкладів
+            Vklad v2 = new DovgostrokoviyVklad("Доцент Іваненко", 10000);
+            Vklad v3 = new VkladNaVymogu("Студентка Сидоренко", 5000);
+
+            // Обчислення суми для 12 місяців (Довгостроковий вклад)
+            Console.WriteLine($"Довгостроковий вклад (12 міс.): {v2.RozrahSuma(12):F2} грн");
+
+            // Спроба розрахувати суму для -3 місяців (помилка)
+            Console.WriteLine($"Вклад на вимогу (-3 міс.): {v3.RozrahSuma(-3):F2} грн");
+             
+            // Коректний розрахунок для 6 місяців
+            Console.WriteLine($"Вклад на вимогу (6 міс.): {v3.RozrahSuma(6):F2} грн");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Загальна помилка: " + ex.Message);
+        }
+
+        Console.ReadLine();
+    }
+}
