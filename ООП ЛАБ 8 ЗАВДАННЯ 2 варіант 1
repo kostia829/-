@@ -1,0 +1,55 @@
+using System;
+using System.IO;
+using System.Linq;
+
+namespace LabOOP_0108
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string directory = @"C:\OOP_lab08";
+            string path = Path.Combine(directory, "f.txt");
+
+            // Якщо папка не існує — створити її
+            if (!Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
+            // Створення тестового файлу для демонстрації
+            double[] numbers = { 1.5, -2.0, 3.0, 4.5, -1.0 };
+            using (StreamWriter writer = new StreamWriter(path))
+            {
+                foreach (double num in numbers)
+                {
+                    writer.WriteLine(num);
+                }
+            }
+
+            // Читання даних з файлу
+            double[] fileNumbers = File.ReadAllLines(path)
+                                       .Where(line => !string.IsNullOrWhiteSpace(line))
+                                       .Select(double.Parse)
+                                       .ToArray();
+
+            // Обчислення
+            double sum = fileNumbers.Sum();
+            double product = fileNumbers.Aggregate(1.0, (acc, val) => acc * val);
+            double sumSquares = fileNumbers.Sum(x => x * x);
+            double absSum = Math.Abs(sum);
+            double productSquare = product * product;
+            double lastComponent = fileNumbers[fileNumbers.Length - 1];
+
+            // Вивід результатів
+            Console.WriteLine($"Сума: {sum}");
+            Console.WriteLine($"Добуток: {product}");
+            Console.WriteLine($"Сума квадратів: {sumSquares}");
+            Console.WriteLine($"Модуль суми: {absSum}");
+            Console.WriteLine($"Квадрат добутку: {productSquare}");
+            Console.WriteLine($"Останній елемент: {lastComponent}");
+
+            Console.ReadLine();
+        }
+    }
+}
