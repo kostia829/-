@@ -1,0 +1,32 @@
+using System;
+using System.Globalization;
+using System.Linq;
+
+class Program
+{
+    static void Main()
+    {
+        Console.WriteLine("Enter three dates separated by commas (dd.MM.yyyy):");
+        string input = Console.ReadLine() ?? "";
+
+        string[] parts = input.Split(',');
+        DateTime[] dates = parts.Select(date =>
+            DateTime.ParseExact(date.Trim(), "dd.MM.yyyy", CultureInfo.InvariantCulture)).ToArray();
+
+        // 1. Рік з найменшим номером
+        int minYear = dates.Min(d => d.Year);
+        Console.WriteLine($"The smallest year: {minYear}");
+
+        // 2. Весняні дати (березень, квітень, травень)
+        Console.WriteLine("Spring dates:");
+        foreach (var d in dates)
+        {
+            if (d.Month >= 3 && d.Month <= 5)
+                Console.WriteLine(d.ToShortDateString());
+        }
+
+        // 3. Найпізніша дата
+        DateTime latest = dates.Max();
+        Console.WriteLine($"The latest date: {latest.ToShortDateString()}");
+    }
+}
